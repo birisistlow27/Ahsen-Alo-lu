@@ -3,7 +3,7 @@ import { useCart } from '../contexts/CartContext';
 import { Trash2, ShoppingBag, ArrowRight } from 'lucide-react';
 
 export default function Cart() {
-  const { items, removeFromCart, total } = useCart();
+  const { items, removeFromCart, updateQuantity, total } = useCart();
   const navigate = useNavigate();
 
   return (
@@ -35,7 +35,19 @@ export default function Cart() {
                   <div className="flex items-start justify-between">
                     <div>
                       <h3 className="text-lg font-bold text-natural-900"><Link to={`/product/${item.productId}`} className="hover:text-moss-500">{item.name}</Link></h3>
-                      <p className="mt-1 text-sm font-medium text-natural-400">Miktar: {item.quantity}</p>
+                      <div className="mt-2 flex items-center">
+                        <label htmlFor={`qty-${item.cartItemId}`} className="mr-2 text-sm font-medium text-natural-500">Miktar:</label>
+                        <select
+                          id={`qty-${item.cartItemId}`}
+                          value={item.quantity}
+                          onChange={(e) => updateQuantity(item.cartItemId, Number(e.target.value))}
+                          className="text-sm rounded-lg border border-natural-300 px-2 py-1 text-natural-900 focus:ring-moss-500 focus:border-moss-500 bg-white"
+                        >
+                          {[1, 2, 3, 4, 5].map((num) => (
+                            <option key={num} value={num}>{num}</option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
                     <p className="text-lg font-bold text-terracotta-500">{(item.price * item.quantity).toLocaleString('tr-TR')} TL</p>
                   </div>
