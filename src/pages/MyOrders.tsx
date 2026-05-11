@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { getUserOrders, Order } from '../lib/db';
-import { PackageOpen, Clock, CheckCircle, PackageCheck } from 'lucide-react';
+import { PackageOpen, Clock, CheckCircle, PackageCheck, Info } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 
 export default function MyOrders() {
@@ -80,6 +80,16 @@ export default function MyOrders() {
                    <p className="text-lg font-bold text-terracotta-500 mt-2">{order.totalAmount.toLocaleString('tr-TR')} TL</p>
                  </div>
                </div>
+
+               {order.status === 'tamamlandı' && (
+                 <div className="mb-4 bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-start">
+                   <Info className="h-5 w-5 text-emerald-600 mt-0.5 mr-3 flex-shrink-0" />
+                   <div>
+                     <h4 className="text-sm font-bold text-emerald-800">Siparişiniz Hazır!</h4>
+                     <p className="text-sm text-emerald-700 mt-1">Okulda Ahsen Aloğlu'dan ürünü teslim alabilirsiniz.</p>
+                   </div>
+                 </div>
+               )}
                
                <div className="space-y-3">
                  <h4 className="text-sm font-semibold text-natural-900 uppercase tracking-wide">Ürünler</h4>
