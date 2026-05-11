@@ -1,0 +1,67 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isAdmin() {
+      // NOTE: User email Ahsen provided for this application
+      return request.auth != null && (request.auth.token.email == "ahsenaloglu27@gmail.com" || request.auth.token.email == "ahsenaloglu@ahsen.local");
+    }
+
+    function isSystem() {
+       return request.auth != null && request.auth.uid == "system"; // Placeholder for any specific sys-only rules
+    }
+
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    function isValidProduct(data) {
+      return data.keys().hasAll(['name', 'price']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             data.price is number && data.price >= 0;
+    }
+
+    function isValidCategory(data) {
+      return data.keys().hasAll(['name']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 50;
+    }
+
+    function isValidOrder(data) {
+      return data.keys().hasAll(['customerName', 'items', 'totalAmount', 'status', 'createdAt']) &&
+             data.customerName is string && data.customerName.size() > 0 && data.customerName.size() <= 100 &&
+             data.items is list && data.items.size() > 0 && data.items.size() <= 200 &&
+             data.totalAmount is number && data.totalAmount >= 0 &&
+             data.status in ['bekliyor', 'onaylandı', 'tamamlandı'] &&
+             (!data.keys().hasAll(['userId']) || data.userId is string);
+    }
+
+    match /products/{productId} {
+      allow read: if true; 
+      allow create: if isAdmin() && isValidProduct(incoming());
+      allow update: if isAdmin() && isValidProduct(incoming());
+      allow delete: if isAdmin();
+    }
+
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidCategory(incoming());
+      allow update: if isAdmin() && isValidCategory(incoming());
+      allow delete: if isAdmin();
+    }
+
+    match /orders/{orderId} {
+      // Customers can create orders (No Auth required as it's an open storefront for classmates).
+      allow create: if isValidOrder(incoming()) && 
+                    incoming().status == 'bekliyor' && 
+                    incoming().createdAt == request.time;
+      
+      // Admin only permissions or user who owns the order
+      allow read: if isAdmin() || (request.auth != null && resource.data.userId == request.auth.uid);
+      allow update: if isAdmin() && isValidOrder(incoming());
+      allow delete: if isAdmin();
+    }
+  }
+}

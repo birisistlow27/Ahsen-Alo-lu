@@ -1,0 +1,67 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "Store product with customizable variants",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Name of the product" },
+        "description": { "type": "string" },
+        "price": { "type": "number", "description": "Base price" },
+        "imageUrl": { "type": "string" },
+        "categoryId": { "type": "string" },
+        "options": {
+          "type": "array",
+          "description": "Customizable options like design, font, size",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "choices": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        }
+      },
+      "required": ["name", "price"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer order containing items",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "customerName": { "type": "string" },
+        "items": { "type": "array" },
+        "totalAmount": { "type": "number" },
+        "status": { "type": "string", "enum": ["bekliyor", "onaylandı", "tamamlandı"] },
+        "note": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["customerName", "items", "totalAmount", "status", "createdAt"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Product categories",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "required": ["name"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": { "$ref": "#/entities/Product" },
+      "description": "Products available in the store"
+    },
+    "/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "Placed orders"
+    },
+    "/categories/{categoryId}": {
+      "schema": { "$ref": "#/entities/Category" },
+      "description": "Store categories"
+    }
+  }
+}
