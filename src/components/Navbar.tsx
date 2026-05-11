@@ -56,7 +56,7 @@ export default function Navbar() {
             {user ? (
               <div className="flex items-center space-x-1 border-l border-natural-200 pl-4 ml-2">
                 {!isAdmin && (
-                  <Link to="/my-orders" className="text-sm font-medium text-natural-600 hover:text-moss-600 mr-3 hidden sm:inline">
+                  <Link to="/my-orders" className="text-xs sm:text-sm font-medium text-natural-600 hover:text-moss-600 mr-2 sm:mr-3">
                     Siparişlerim
                   </Link>
                 )}
