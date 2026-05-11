@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { getUserOrders, Order } from '../lib/db';
-import { PackageOpen, Clock, CheckCircle, PackageCheck, Info } from 'lucide-react';
+import { getUserOrders, deleteOrder, Order } from '../lib/db';
+import { PackageOpen, Clock, CheckCircle, PackageCheck, Info, Trash2, Ban } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 
 export default function MyOrders() {
@@ -10,25 +10,41 @@ export default function MyOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const loadOrders = async () => {
+    try {
+      const data = await getUserOrders(user!.uid);
+      setOrders(data || []);
+    } catch (err) {
+      console.error("Siparişler yüklenirken hata:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!user) {
       navigate('/');
       return;
     }
-    
-    async function loadOrders() {
-      try {
-        const data = await getUserOrders(user!.uid);
-        setOrders(data || []);
-      } catch (err) {
-        console.error("Siparişler yüklenirken hata:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    
     loadOrders();
   }, [user, navigate]);
+
+  const handleCancelOrder = async (orderId: string, isPaid?: boolean) => {
+    if (isPaid) {
+      alert("İptal edemezsiniz çünkü ücreti ödediniz.");
+      return;
+    }
+
+    if (window.confirm("Siparişinizi iptal etmek istediğinizden emin misiniz?")) {
+      try {
+        await deleteOrder(orderId);
+        await loadOrders();
+      } catch (err: any) {
+        console.error("deleteOrder failed:", err);
+        alert("İptal işlemi başarısız oldu. Lütfen konsola bakın.");
+      }
+    }
+  };
 
   if (!user) return null;
 
@@ -67,7 +83,8 @@ export default function MyOrders() {
       ) : (
         <div className="space-y-4">
           {orders.map(order => (
-            <div key={order.id} className="bg-white rounded-2xl shadow-sm border border-natural-300 p-6">
+            <div key={order.id} className="bg-white rounded-2xl shadow-sm border border-natural-300 p-6 relative">
+               
                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 border-b border-natural-100 pb-4 mb-4">
                  <div>
                    <p className="text-sm text-natural-500">Sipariş ID: <span className="font-mono">{order.id}</span></p>
@@ -76,7 +93,10 @@ export default function MyOrders() {
                    </p>
                  </div>
                  <div className="flex flex-col sm:items-end">
-                   {getStatusBadge(order.status)}
+                   <div className="flex gap-2 items-center">
+                     {getStatusBadge(order.status)}
+                     {order.isPaid && <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">Ödendi</span>}
+                   </div>
                    <p className="text-lg font-bold text-terracotta-500 mt-2">{order.totalAmount.toLocaleString('tr-TR')} TL</p>
                  </div>
                </div>
@@ -88,6 +108,24 @@ export default function MyOrders() {
                      <h4 className="text-sm font-bold text-emerald-800">Siparişiniz Hazır!</h4>
                      <p className="text-sm text-emerald-700 mt-1">Okulda Ahsen Aloğlu'dan ürünü teslim alabilirsiniz.</p>
                    </div>
+                 </div>
+               )}
+
+               {order.isPaid ? (
+                 <div className="mb-4 bg-natural-50 border border-natural-200 rounded-xl p-3 flex items-start">
+                   <Ban className="h-5 w-5 text-natural-400 mt-0.5 mr-3 flex-shrink-0" />
+                   <div>
+                     <p className="text-sm text-natural-600 mt-0.5">İptal edemezsiniz çünkü ücreti ödediniz.</p>
+                   </div>
+                 </div>
+               ) : (
+                 <div className="mb-4 flex justify-end">
+                    <button
+                      onClick={() => handleCancelOrder(order.id, order.isPaid)}
+                      className="inline-flex items-center text-sm font-medium text-terracotta-500 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors border border-red-100"
+                    >
+                      <Trash2 className="h-4 w-4 mr-1.5" /> Siparişi İptal Et
+                    </button>
                  </div>
                )}
                

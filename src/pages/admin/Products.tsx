@@ -127,7 +127,8 @@ export default function AdminProducts() {
     try {
       await deleteProduct(id);
       await loadData();
-    } catch (err) {
+    } catch (err: any) {
+      console.error(err);
       alert("Hata oluştu.");
     }
   };

@@ -144,7 +144,7 @@ export default function ProductDetails() {
                           onChange={(e) => setQuantity(Number(e.target.value))}
                           className="block w-full h-12 px-4 rounded-xl border border-natural-300 text-natural-900 focus:ring-2 focus:ring-moss-500 focus:border-moss-500 bg-white font-medium"
                         >
-                          {[...Array(10)].map((_, i) => (
+                          {[...Array(5)].map((_, i) => (
                             <option key={i + 1} value={i + 1}>{i + 1}</option>
                           ))}
                         </select>

@@ -44,6 +44,7 @@ export interface Order {
   items: OrderItem[];
   totalAmount: number;
   status: 'bekliyor' | 'onaylandı' | 'tamamlandı';
+  isPaid?: boolean;
   note?: string;
   createdAt: string | any;
 }
@@ -162,5 +163,21 @@ export const updateOrderStatus = async (id: string, status: Order['status']) => 
     await updateDoc(doc(db, 'orders', id), { status });
   } catch (err) {
     handleFirestoreError(err, OperationType.UPDATE, `orders/${id}`);
+  }
+};
+
+export const updateOrderPaidStatus = async (id: string, isPaid: boolean) => {
+  try {
+    await updateDoc(doc(db, 'orders', id), { isPaid });
+  } catch (err) {
+    handleFirestoreError(err, OperationType.UPDATE, `orders/${id}`);
+  }
+};
+
+export const deleteOrder = async (id: string) => {
+  try {
+    await deleteDoc(doc(db, 'orders', id));
+  } catch (err) {
+    handleFirestoreError(err, OperationType.DELETE, `orders/${id}`);
   }
 };

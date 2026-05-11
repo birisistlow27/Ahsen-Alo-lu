@@ -59,9 +59,9 @@ service cloud.firestore {
                     incoming().createdAt == request.time;
       
       // Admin only permissions or user who owns the order
-      allow read: if isAdmin() || (request.auth != null && resource.data.userId == request.auth.uid);
+      allow read: if isAdmin() || (request.auth != null && resource.data.get('userId', '') == request.auth.uid);
       allow update: if isAdmin() && isValidOrder(incoming());
-      allow delete: if isAdmin();
+      allow delete: if isAdmin() || (request.auth != null && resource.data.get('userId', '') == request.auth.uid && !existing().get('isPaid', false));
     }
   }
 }

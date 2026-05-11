@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { updateOrderStatus, Order } from '../../lib/db';
+import { updateOrderStatus, updateOrderPaidStatus, Order } from '../../lib/db';
 import { db } from '../../lib/firebase';
 import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
-import { Loader2, CheckSquare, Square } from 'lucide-react';
+import { Loader2, CheckSquare, Square, DollarSign } from 'lucide-react';
 import { handleFirestoreError, OperationType } from '../../lib/error';
 
 export default function AdminOrders() {
@@ -36,6 +36,15 @@ export default function AdminOrders() {
     }
   };
 
+  const handleTogglePaid = async (id: string, isPaid: boolean) => {
+    try {
+      setOrders(orders.map(o => o.id === id ? { ...o, isPaid } : o));
+      await updateOrderPaidStatus(id, isPaid);
+    } catch (err) {
+      alert("Hata oluştu.");
+    }
+  };
+
   if (loading) return <div className="flex justify-center py-12"><Loader2 className="animate-spin text-emerald-500 h-8 w-8" /></div>;
 
   const sortedOrders = [...orders].sort((a, b) => {
@@ -59,6 +68,7 @@ export default function AdminOrders() {
         <div className="space-y-4">
           {sortedOrders.map((order) => {
             const isCompleted = order.status === 'tamamlandı';
+            const isPaid = order.isPaid === true;
             return (
               <div 
                 key={order.id} 
@@ -69,6 +79,7 @@ export default function AdminOrders() {
                     <button
                       onClick={() => handleToggleStatus(order.id, !isCompleted)}
                       className={`flex-shrink-0 transition-colors ${isCompleted ? 'text-emerald-500' : 'text-zinc-500 hover:text-zinc-300'}`}
+                      title={isCompleted ? "Tamamlandı" : "Bekliyor"}
                     >
                       {isCompleted ? <CheckSquare className="h-8 w-8" /> : <Square className="h-8 w-8" />}
                     </button>
@@ -81,7 +92,18 @@ export default function AdminOrders() {
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center">
+                  <div className="flex items-center gap-3">
+                     <button
+                       onClick={() => handleTogglePaid(order.id, !isPaid)}
+                       className={`flex items-center px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
+                         isPaid 
+                           ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
+                           : 'bg-zinc-700 text-zinc-400 border border-zinc-600 hover:bg-zinc-600 hover:text-white'
+                       }`}
+                     >
+                       <DollarSign className="h-4 w-4 mr-1" />
+                       Ücreti Aldım
+                     </button>
                      <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
                         isCompleted ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'
                      }`}>
