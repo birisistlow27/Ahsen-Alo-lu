@@ -34,7 +34,13 @@ export default function Cart() {
                 <div className="mt-4 sm:mt-0 sm:ml-6 flex-1">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="text-lg font-bold text-natural-900"><Link to={`/product/${item.productId}`} className="hover:text-moss-500">{item.name}</Link></h3>
+                      <h3 className="text-lg font-bold text-natural-900">
+                        {item.isAccessory ? (
+                          <span>{item.name} <span className="text-sm font-normal text-natural-500">({item.linkedProductName} için)</span></span>
+                        ) : (
+                          <Link to={`/product/${item.productId}`} className="hover:text-moss-500">{item.name}</Link>
+                        )}
+                      </h3>
                       <div className="mt-2 flex items-center">
                         <label htmlFor={`qty-${item.cartItemId}`} className="mr-2 text-sm font-medium text-natural-500">Miktar:</label>
                         <select

@@ -116,7 +116,10 @@ export default function AdminOrders() {
                     {order.items.map((item, idx) => (
                       <li key={idx} className="flex justify-between text-sm">
                          <div>
-                            <span className="font-semibold">{item.quantity}x {item.name}</span>
+                            <span className="font-semibold">
+                              {item.quantity}x {item.name}
+                              {item.isAccessory && <span className="text-zinc-500 font-normal ml-1">({item.linkedProductName} için)</span>}
+                            </span>
                             {Object.entries(item.selectedOptions || {}).map(([k, v]) => (
                                <span key={k} className="ml-2 inline-block px-2 py-0.5 bg-zinc-700/50 text-xs rounded">
                                  {k}: {v}

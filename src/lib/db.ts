@@ -9,6 +9,14 @@ export interface Category {
   parentId?: string;
 }
 
+export interface Accessory {
+  id: string;
+  name: string;
+  description?: string;
+  price: number;
+  imageUrl?: string;
+}
+
 export interface ProductChoice {
   name: string;
   image?: string;
@@ -125,6 +133,41 @@ export const deleteProduct = async (id: string) => {
     await deleteDoc(doc(db, 'products', id));
   } catch (err) {
     handleFirestoreError(err, OperationType.DELETE, `products/${id}`);
+  }
+};
+
+// Accessories
+export const getAccessories = async (): Promise<Accessory[]> => {
+  try {
+    const snapshot = await getDocs(collection(db, 'accessories'));
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Accessory));
+  } catch (err) {
+    handleFirestoreError(err, OperationType.LIST, 'accessories');
+  }
+};
+
+export const addAccessory = async (accessory: Omit<Accessory, 'id'>) => {
+  try {
+    const docRef = await addDoc(collection(db, 'accessories'), accessory);
+    return docRef.id;
+  } catch (err) {
+    handleFirestoreError(err, OperationType.CREATE, 'accessories');
+  }
+};
+
+export const updateAccessory = async (id: string, data: Partial<Accessory>) => {
+  try {
+    await updateDoc(doc(db, 'accessories', id), data);
+  } catch (err) {
+    handleFirestoreError(err, OperationType.UPDATE, `accessories/${id}`);
+  }
+};
+
+export const deleteAccessory = async (id: string) => {
+  try {
+    await deleteDoc(doc(db, 'accessories', id));
+  } catch (err) {
+    handleFirestoreError(err, OperationType.DELETE, `accessories/${id}`);
   }
 };
 

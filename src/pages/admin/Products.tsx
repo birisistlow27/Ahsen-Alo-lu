@@ -186,7 +186,7 @@ export default function AdminProducts() {
                </div>
                <div>
                  <label className="block text-sm font-semibold text-natural-900 mb-1">Kategori</label>
-                 <select required value={categoryId} onChange={e => setCategoryId(e.target.value)} className="w-full bg-natural-100 rounded-xl border border-natural-300 px-4 py-2 text-natural-900 focus:border-moss-500 focus:ring-moss-500">
+                 <select value={categoryId} onChange={e => setCategoryId(e.target.value)} className="w-full bg-natural-100 rounded-xl border border-natural-300 px-4 py-2 text-natural-900 focus:border-moss-500 focus:ring-moss-500">
                    <option value="" className="text-natural-900">Kategori Seçin</option>
                    {categories.filter(c => !c.parentId).map(mainCat => (
                      <optgroup key={mainCat.id} label={mainCat.name}>

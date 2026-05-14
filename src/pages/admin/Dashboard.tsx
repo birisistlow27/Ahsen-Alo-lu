@@ -7,6 +7,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
 
 import AdminOrders from './Orders';
 import AdminProducts from './Products';
+import AdminAccessories from './Accessories';
 import AdminCategories from './Categories';
 
 import { signOut } from 'firebase/auth';
@@ -210,6 +211,13 @@ export default function AdminDashboard() {
           </div>
           
           <div className="bg-zinc-800/30 rounded-2xl border border-zinc-700/50 p-4 h-[600px] flex flex-col items-stretch">
+             <h2 className="text-lg font-bold text-white mb-4 px-2">Aksesuarlar</h2>
+             <div className="overflow-y-auto pr-2 custom-scrollbar flex-grow">
+               <AdminAccessories />
+             </div>
+          </div>
+          
+          <div className="xl:col-span-2 bg-zinc-800/30 rounded-2xl border border-zinc-700/50 p-4 flex flex-col items-stretch max-h-[600px]">
              <h2 className="text-lg font-bold text-white mb-4 px-2">Kategoriler</h2>
              <div className="overflow-y-auto pr-2 custom-scrollbar flex-grow">
                <AdminCategories />

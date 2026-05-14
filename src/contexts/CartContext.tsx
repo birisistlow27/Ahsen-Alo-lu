@@ -8,6 +8,8 @@ export interface CartItem {
   quantity: number;
   selectedOptions: Record<string, string>;
   imageUrl?: string;
+  isAccessory?: boolean;
+  linkedProductName?: string;
 }
 
 interface CartContextType {

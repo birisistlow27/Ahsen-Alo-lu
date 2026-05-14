@@ -24,6 +24,18 @@
       },
       "required": ["name", "price"]
     },
+    "Accessory": {
+      "title": "Accessory",
+      "description": "Standalone accessory products without categories",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" },
+        "imageUrl": { "type": "string" }
+      },
+      "required": ["name", "price"]
+    },
     "Order": {
       "title": "Order",
       "description": "Customer order containing items",
@@ -54,6 +66,10 @@
     "/products/{productId}": {
       "schema": { "$ref": "#/entities/Product" },
       "description": "Products available in the store"
+    },
+    "/accessories/{accessoryId}": {
+      "schema": { "$ref": "#/entities/Accessory" },
+      "description": "Accessories available in the store"
     },
     "/orders/{orderId}": {
       "schema": { "$ref": "#/entities/Order" },

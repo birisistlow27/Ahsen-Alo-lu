@@ -86,7 +86,10 @@ export default function Checkout() {
              <ul className="space-y-3 mb-4">
                 {items.map((item) => (
                   <li key={item.cartItemId} className="flex justify-between text-sm text-natural-400">
-                     <span>{item.quantity}x {item.name}</span>
+                     <span>
+                       {item.quantity}x {item.name}
+                       {item.isAccessory && <span className="opacity-75 ml-1">({item.linkedProductName} için)</span>}
+                     </span>
                      <span className="font-medium text-natural-900">{(item.price * item.quantity).toLocaleString('tr-TR')} TL</span>
                   </li>
                 ))}

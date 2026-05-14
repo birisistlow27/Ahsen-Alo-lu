@@ -11,6 +11,7 @@ import CheckoutSuccess from './pages/CheckoutSuccess';
 import MyOrders from './pages/MyOrders';
 import Login from './pages/Login';
 
+import Accessories from './pages/Accessories';
 import AdminDashboard from './pages/admin/Dashboard';
 
 function RequireAuth({ children }: { children: React.ReactElement }) {
@@ -61,6 +62,7 @@ export default function App() {
                   <Routes>
                     <Route path="/" element={<RequireAuth><Home /></RequireAuth>} />
                     <Route path="/product/:id" element={<RequireAuth><ProductDetails /></RequireAuth>} />
+                    <Route path="/accessories" element={<RequireAuth><Accessories /></RequireAuth>} />
                     <Route path="/cart" element={<RequireAuth><Cart /></RequireAuth>} />
                     <Route path="/checkout" element={<RequireAuth><Checkout /></RequireAuth>} />
                     <Route path="/checkout-success" element={<RequireAuth><CheckoutSuccess /></RequireAuth>} />

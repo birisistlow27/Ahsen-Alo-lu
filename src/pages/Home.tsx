@@ -11,10 +11,17 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+  const [showInstructions, setShowInstructions] = useState(false);
   const { addToCart } = useCart();
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Check if instructions were seen
+    const hasSeen = localStorage.getItem('ahsen-instructions-seen');
+    if (!hasSeen) {
+      setShowInstructions(true);
+    }
+
     async function loadData() {
       try {
         const [pData, cData] = await Promise.all([getProducts(), getCategories()]);
@@ -28,6 +35,11 @@ export default function Home() {
     }
     loadData();
   }, []);
+
+  const closeInstructions = () => {
+    localStorage.setItem('ahsen-instructions-seen', 'true');
+    setShowInstructions(false);
+  };
 
   const handleProductClick = (product: Product) => {
     const hasOptions = product.options && product.options.length > 0;
@@ -168,6 +180,29 @@ export default function Home() {
           <PackageOpen className="mx-auto h-12 w-12 text-natural-400" />
           <h3 className="mt-2 text-sm font-semibold text-natural-900">Ürün bulunamadı</h3>
           <p className="mt-1 text-sm text-natural-400">Bu kategoride henüz ürün eklenmemiş.</p>
+        </div>
+      )}
+
+      {/* Instructions Modal */}
+      {showInstructions && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-natural-900/60 backdrop-blur-sm fade-in">
+          <div className="bg-white rounded-[2rem] shadow-2xl max-w-sm w-full p-8 slide-up text-center relative border border-natural-200">
+             <div className="mx-auto bg-moss-100 text-moss-600 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+               <PackageOpen className="h-8 w-8" />
+             </div>
+             <h2 className="text-2xl font-black text-natural-900 mb-3 tracking-tight">Hoş Geldiniz!</h2>
+             <p className="text-natural-600 text-sm mb-8 leading-relaxed">
+               Bu platform üzerinden Ahsen'in özenle hazırladığı ürünleri inceleyebilirsiniz. İlk olarak istediğiniz <strong>ürünü</strong> seçin, ardından isterseniz <strong>ek aksesuarları</strong> sepetinize ekleyebilirsiniz. Aksesuarlar tek başına satılmamaktadır.
+               <br/><br/>
+               Siparişinizi oluşturduktan sonra <strong>ödeme ve teslimat işlemleri okulda yüz yüze</strong> yapılacaktır.
+             </p>
+             <button 
+               onClick={closeInstructions}
+               className="w-full bg-moss-600 hover:bg-moss-700 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-moss-500/30 transition-all border-b-4 border-moss-800 active:border-b-0 active:mt-1 focus:outline-none"
+             >
+               Anladım, Alışverişe Başla
+             </button>
+          </div>
         </div>
       )}
 

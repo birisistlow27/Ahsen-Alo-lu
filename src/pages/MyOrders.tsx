@@ -135,7 +135,10 @@ export default function MyOrders() {
                    {order.items.map((item, idx) => (
                      <li key={idx} className="py-2 flex justify-between">
                         <div>
-                          <p className="text-sm font-medium text-natural-900">{item.quantity}x {item.name}</p>
+                          <p className="text-sm font-medium text-natural-900">
+                            {item.quantity}x {item.name}
+                            {item.isAccessory && <span className="text-natural-500 font-normal ml-1">({item.linkedProductName} için)</span>}
+                          </p>
                           {Object.entries(item.selectedOptions || {}).length > 0 && (
                             <p className="text-xs text-natural-400 mt-0.5">
                               {Object.entries(item.selectedOptions).map(([k, v]) => `${k}: ${v}`).join(', ')}
