@@ -29,9 +29,9 @@ export default function MyOrders() {
     loadOrders();
   }, [user, navigate]);
 
-  const handleCancelOrder = async (orderId: string, isPaid?: boolean) => {
-    if (isPaid) {
-      alert("İptal edemezsiniz çünkü ücreti ödediniz.");
+  const handleCancelOrder = async (orderId: string, isPaid?: boolean, status?: string) => {
+    if (isPaid || status === 'tamamlandı') {
+      alert("Sipariş iptal edilemez (ödeme yapılmış veya tamamlanmış).");
       return;
     }
 
@@ -101,7 +101,7 @@ export default function MyOrders() {
                  </div>
                </div>
 
-               {order.status === 'tamamlandı' && (
+               {order.status === 'tamamlandı' ? (
                  <div className="mb-4 bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-start">
                    <Info className="h-5 w-5 text-emerald-600 mt-0.5 mr-3 flex-shrink-0" />
                    <div>
@@ -109,9 +109,7 @@ export default function MyOrders() {
                      <p className="text-sm text-emerald-700 mt-1">Okulda Ahsen Aloğlu'dan ürünü teslim alabilirsiniz.</p>
                    </div>
                  </div>
-               )}
-
-               {order.isPaid ? (
+               ) : order.isPaid ? (
                  <div className="mb-4 bg-natural-50 border border-natural-200 rounded-xl p-3 flex items-start">
                    <Ban className="h-5 w-5 text-natural-400 mt-0.5 mr-3 flex-shrink-0" />
                    <div>
@@ -121,7 +119,7 @@ export default function MyOrders() {
                ) : (
                  <div className="mb-4 flex justify-end">
                     <button
-                      onClick={() => handleCancelOrder(order.id, order.isPaid)}
+                      onClick={() => handleCancelOrder(order.id, order.isPaid, order.status)}
                       className="inline-flex items-center text-sm font-medium text-terracotta-500 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors border border-red-100"
                     >
                       <Trash2 className="h-4 w-4 mr-1.5" /> Siparişi İptal Et
