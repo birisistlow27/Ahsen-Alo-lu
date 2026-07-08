@@ -1,10 +1,10 @@
+import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { ShoppingCart, LogIn, LogOut, Package, LayoutDashboard, Menu as MenuIcon, X, CheckSquare, Settings } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
 import { auth } from '../lib/firebase';
 import { signOut } from 'firebase/auth';
-import { useState } from 'react';
 
 export default function Navbar() {
   const { user, isAdmin } = useAuth();
